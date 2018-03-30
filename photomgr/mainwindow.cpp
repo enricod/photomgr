@@ -5,11 +5,12 @@
 #include <QFileDialog>
 #include <QDirIterator>
 #include <QDebug>
-#include "thumbsworker.h".h"
+#include "thumbsworker.h"
 using namespace std;
 
 
-MainWindow::MainWindow(QWidget *parent) : QWidget(parent) {
+MainWindow::MainWindow(QWidget *parent) : QWidget(parent)
+{
 
     setWindowTitle(tr("Raw Images Conversion"));
     resize(800, 600);
@@ -46,20 +47,19 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent) {
 /**
  * @brief MainWindow::selezionaDir scelta della directory
  */
-void MainWindow::selezionaDir() {
-
+void MainWindow::selezionaDir()
+{
 
     QString dir = QFileDialog::getExistingDirectory(this, tr("Open Directory"),
                                                     "/data/Pictures/2018/2018-03-18",
                                                     QFileDialog::ShowDirsOnly
                                                     | QFileDialog::DontResolveSymlinks);
 
-
     QStringList files;
     QDirIterator fileItr(dir, QStringList() << "*.CR2", QDir::Files, QDirIterator::Subdirectories);
-    while (fileItr.hasNext()) {
+    while (fileItr.hasNext())
+    {
         QString f = fileItr.next();
-
         files.append(f);
     }
 
@@ -73,32 +73,13 @@ void MainWindow::selezionaDir() {
     connect(worker, SIGNAL (finished()), worker, SLOT (deleteLater()));
     connect(thread, SIGNAL (finished()), thread, SLOT (deleteLater()));
     thread->start();
-
-
-
-
-
-
-    // Use mapped to run the thread safe scale function on the files.
-    //imageScaling->setFuture(QtConcurrent::mapped(files, scale));
-
-
-    // cout << dir.toStdString() << endl;
-
-
-
-
 }
 
-// aggiornamento dal thread di creazione delle miniature
-void MainWindow::onProgressChanged(QString info) {
-    // Processing code
+void MainWindow::onProgressChanged(QString info)
+{
+    // aggiornamento dal thread di creazione delle miniature
     logsTextEdit->setText("Latest info: " + info);
 }
-
-
-
-
 
 void MainWindow::showImage(int num)
 {
