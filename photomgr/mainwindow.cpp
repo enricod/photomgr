@@ -49,15 +49,17 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent)
  */
 void MainWindow::selezionaDir()
 {
-
+    QDir homeDir = QDir::home();
     QString dir = QFileDialog::getExistingDirectory(this, tr("Open Directory"),
-                                                    "/home/enrico/Pictures/fujifilm",
-                                                    /* "/data/Pictures/2018/2018-03-18", */
+                                                    homeDir.absolutePath(),
                                                     QFileDialog::ShowDirsOnly
                                                     | QFileDialog::DontResolveSymlinks);
 
+    QStringList filters;
+    filters << "*.RAF" << "*.CR2" << "*.ARW";
+
     QStringList files;
-    QDirIterator fileItr(dir, QStringList() << "*.RAF", QDir::Files); //, QDirIterator::Subdirectories);
+    QDirIterator fileItr(dir, filters, QDir::Files); //, QDirIterator::Subdirectories);
     while (fileItr.hasNext())
     {
         QString f = fileItr.next();

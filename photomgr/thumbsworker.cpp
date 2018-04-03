@@ -25,7 +25,7 @@ void ThumbsWorker::process()
 
     for (int i=0; i < this->files.size(); i++)
     {
-        qDebug("immagine trovata %s", ThumbsWorker::toCharArray( this->files.at(i)));
+        //qDebug() << this->files.at(i);
         ThumbsWorker::creaThumbnail( this->files.at(i) );
         emit error(QString(this->files.at(i) ));
     }
@@ -66,7 +66,7 @@ QString ThumbsWorker::creaThumbnail( QString filename)
     LibRaw rawProcessor;
 
 
-    // NON passare char* altrimenti rawProcessor cambia il nome del percorso
+    // NON passare char* altrimenti rawProcessor cambia il nome del file
     int ret  = rawProcessor.open_file(ThumbsWorker::toCharArray(filename));
     if (ret != LIBRAW_SUCCESS)
     {
