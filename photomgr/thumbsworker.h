@@ -22,7 +22,7 @@ class ThumbsWorker : public QObject {
 
     signals:
         void finished();
-
+        void thumbFound(QString filename);
         void error(QString err);
 
     };

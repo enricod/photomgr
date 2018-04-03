@@ -26,8 +26,9 @@ void ThumbsWorker::process()
     for (int i=0; i < this->files.size(); i++)
     {
         //qDebug() << this->files.at(i);
-        ThumbsWorker::creaThumbnail( this->files.at(i) );
-        emit error(QString(this->files.at(i) ));
+        QString thumbname = ThumbsWorker::creaThumbnail( this->files.at(i) );
+        // emit error(QString(this->files.at(i) ));
+        emit thumbFound( thumbname );
     }
 
     emit finished();

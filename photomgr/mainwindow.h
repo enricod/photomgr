@@ -26,9 +26,11 @@ public slots:
     void finished();
     void onProgressChanged(QString info);
     void errorString(QString info);
+    void thumbFound(QString filename);
 
 private:
     Ui::MainWindow *ui;
+    QList<QLabel *> labels;
 
     QPushButton *openButton;
 

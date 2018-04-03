@@ -27,7 +27,11 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent)
     buttonLayout->addWidget(openButton);
     buttonLayout->addStretch();
 
+    QHBoxLayout *centerLayout = new QHBoxLayout();
+
     imagesLayout = new QGridLayout();
+
+    centerLayout->addLayout(imagesLayout);
 
     QHBoxLayout *logsLayout =  new QHBoxLayout();
     logsTextEdit = new QTextEdit();
@@ -35,7 +39,7 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent)
 
     mainLayout = new QVBoxLayout();
     mainLayout->addLayout(buttonLayout);
-    mainLayout->addLayout(imagesLayout);
+    mainLayout->addLayout(centerLayout);
     mainLayout->addLayout(logsLayout);
     mainLayout->addStretch();
 
@@ -63,9 +67,11 @@ void MainWindow::selezionaDir()
     while (fileItr.hasNext())
     {
         QString f = fileItr.next();
-        cout <<  f.toStdString() << endl;
+        // cout <<  f.toStdString() << endl;
         files.append(f);
     }
+
+    cout << " trovate " << files.length() << " immagini" << endl;
 
     QThread* thread = new QThread;
     ThumbsWorker* worker = new ThumbsWorker();
@@ -75,6 +81,7 @@ void MainWindow::selezionaDir()
     connect(thread, SIGNAL (started()), worker, SLOT (process()));
     connect(worker, SIGNAL (finished()), thread, SLOT (quit()));
     connect(worker, SIGNAL (finished()), worker, SLOT (deleteLater()));
+    connect(worker, SIGNAL (thumbFound(QString)), this, SLOT (thumbFound(QString)));
     connect(thread, SIGNAL (finished()), thread, SLOT (deleteLater()));
     thread->start();
 }
@@ -102,6 +109,28 @@ void MainWindow::errorString(QString msg)
 {
     qDebug("errore %s", ThumbsWorker::toCharArray(msg));
     logsTextEdit->append(  msg);
+    //openButton->setEnabled(true);
+    //cancelButton->setEnabled(false);
+    //pauseButton->setEnabled(false);
+}
+
+void MainWindow::thumbFound(QString filename)
+{
+    cout << "trovata immagine " << filename.toStdString() << endl;
+
+    const int imageSize = 100;
+
+    QLabel *imageLabel = new QLabel;
+
+    QImage image(filename);
+    QImage scaled = image.scaled(QSize(imageSize, imageSize), Qt::KeepAspectRatio, Qt::SmoothTransformation);
+
+    imageLabel->setFixedSize(imageSize,imageSize);
+    imagesLayout->addWidget(imageLabel, labels.length() % 3, labels.length() / 3);
+    labels.append(imageLabel);
+
+    imageLabel->setPixmap(QPixmap::fromImage(scaled));
+
     //openButton->setEnabled(true);
     //cancelButton->setEnabled(false);
     //pauseButton->setEnabled(false);
