@@ -27,6 +27,4 @@ class ThumbsWorker : public QObject {
 
     };
 
-
-
 #endif // THUMBSWORKER_H

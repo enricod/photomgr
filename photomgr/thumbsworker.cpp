@@ -42,7 +42,7 @@ void ThumbsWorker::process()
  */
 char* ThumbsWorker::toCharArray(QString qstring)
 {
-    QByteArray ba = qstring.toLocal8Bit();
+    QByteArray ba = qstring.toLatin1(); //.toLocal8Bit8Bit();
     return ba.data();
 }
 
@@ -61,27 +61,38 @@ QString ThumbsWorker::creaThumbnail( QString filename)
     QDir().mkdir( thumbsDir );
     QString result = QString( thumbsDir.append("/").append( fileInfo.baseName()).append(".jpeg"));
 
-    qDebug("creazione thumb per %s ", ThumbsWorker::toCharArray(result));
+    qDebug("creazione thumb per %s -> %s ", filenameAsCharArray, ThumbsWorker::toCharArray(result));
 
-    LibRaw RawProcessor;
-    int ret = RawProcessor.open_file(filenameAsCharArray, 1);
+    LibRaw rawProcessor;
 
+
+    // NON passare char* altrimenti rawProcessor cambia il nome del percorso
+    int ret  = rawProcessor.open_file(ThumbsWorker::toCharArray(filename));
+    if (ret != LIBRAW_SUCCESS)
+    {
+        fprintf(stderr, "errore apertura '%s' : %s \n", ThumbsWorker::toCharArray(filename), libraw_strerror(ret));
+        return result;
+    }
+/*
     if ((ret = RawProcessor.unpack()) != LIBRAW_SUCCESS)
     {
-        fprintf(stderr, "Cannot unpack %s: %s\n", filenameAsCharArray, libraw_strerror(ret));
-        return 0;
+        fprintf(stderr, "Cannot unpack '%s' : %s \n", filenameAsCharArray, libraw_strerror(ret));
+        return result;
     }
+*/
 
-    qDebug("creazione thumbnail in %s", ThumbsWorker::toCharArray(result));
-    /*
+
+/*
     if (LIBRAW_SUCCESS != (ret = RawProcessor.dcraw_process()))
     {
         fprintf(stderr, "Cannot do postpocessing on %s: %s\n", filename, libraw_strerror(ret));
-        if (LIBRAW_FATAL_ERROR(ret))
-            return;
+        if (LIBRAW_FATAL_ERROR(ret)) {
+            return result;
+        }
     }
+*/
 
-
+/*
 
 
     cout << "done processing" << endl;
@@ -93,12 +104,12 @@ QString ThumbsWorker::creaThumbnail( QString filename)
     cout << "scrittura ppm, ret=" << ret << endl;
 
     */
-    RawProcessor.unpack_thumb();
-    ret = RawProcessor.dcraw_thumb_writer(ThumbsWorker::toCharArray( result ));
-    qDebug( "\tscrittura thumbnail fatta %s, ret=%d", ThumbsWorker::toCharArray( result ),  ret);
-
-
-
-    RawProcessor.recycle();
+    ret = rawProcessor.unpack_thumb();
+    if (ret  != LIBRAW_SUCCESS) {
+        qDebug( "unpack thumbnail errata %s, ret=%s", ThumbsWorker::toCharArray( result ),  libraw_strerror(ret));
+    } else {
+        ret = rawProcessor.dcraw_thumb_writer(ThumbsWorker::toCharArray( result ));
+    }
+    rawProcessor.recycle();
     return result;
 }

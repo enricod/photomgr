@@ -51,15 +51,17 @@ void MainWindow::selezionaDir()
 {
 
     QString dir = QFileDialog::getExistingDirectory(this, tr("Open Directory"),
-                                                    "/data/Pictures/2018/2018-03-18",
+                                                    "/home/enrico/Pictures/fujifilm",
+                                                    /* "/data/Pictures/2018/2018-03-18", */
                                                     QFileDialog::ShowDirsOnly
                                                     | QFileDialog::DontResolveSymlinks);
 
     QStringList files;
-    QDirIterator fileItr(dir, QStringList() << "*.CR2", QDir::Files, QDirIterator::Subdirectories);
+    QDirIterator fileItr(dir, QStringList() << "*.RAF", QDir::Files); //, QDirIterator::Subdirectories);
     while (fileItr.hasNext())
     {
         QString f = fileItr.next();
+        cout <<  f.toStdString() << endl;
         files.append(f);
     }
 
