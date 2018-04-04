@@ -29,9 +29,19 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent)
 
     QHBoxLayout *centerLayout = new QHBoxLayout();
 
-    imagesLayout = new QGridLayout();
 
-    centerLayout->addLayout(imagesLayout);
+    // per creare una scrollbar attorno alla griglia delle immagini
+    QWidget *client = new QWidget;
+    QScrollArea *scrollArea = new QScrollArea;
+    scrollArea->setWidgetResizable(true);
+    scrollArea->setWidget(client);
+
+
+
+    imagesLayout = new QGridLayout();
+    client->setLayout(imagesLayout);
+
+    centerLayout->addWidget(scrollArea);
 
     QHBoxLayout *logsLayout =  new QHBoxLayout();
     logsTextEdit = new QTextEdit();
@@ -116,17 +126,36 @@ void MainWindow::errorString(QString msg)
 
 void MainWindow::thumbFound(QString filename)
 {
-    cout << "trovata immagine " << filename.toStdString() << endl;
+    fprintf(stdout, "thumbFound trovata immagine '%s'\n", ThumbsWorker::toCharArray(filename));
+
 
     const int imageSize = 100;
+/*
+    // Cancel and wait if we are already loading images.
+    if (imageScaling->isRunning()) {
+        imageScaling->cancel();
+        imageScaling->waitForFinished();
+    }
 
+    QStringList files;
+    files.append(filename);
+
+    std::function<QImage(const QString&)> scale = [imageSize](const QString &imageFileName) {
+        QImage image(imageFileName);
+        return image.scaled(QSize(imageSize, imageSize), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+    };
+
+    // Use mapped to run the thread safe scale function on the files.
+    imageScaling->setFuture(QtConcurrent::mapped(files, scale));
+*/
     QLabel *imageLabel = new QLabel;
 
     QImage image(filename);
     QImage scaled = image.scaled(QSize(imageSize, imageSize), Qt::KeepAspectRatio, Qt::SmoothTransformation);
 
     imageLabel->setFixedSize(imageSize,imageSize);
-    imagesLayout->addWidget(imageLabel, labels.length() / 4 , labels.length() % 4 );
+    imagesLayout->addWidget(imageLabel, labels.length() / 5 , labels.length() % 5 );
+
     imageLabel->setPixmap(QPixmap::fromImage(scaled));
     labels.append(imageLabel);
 

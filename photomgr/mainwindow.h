@@ -39,7 +39,7 @@ private:
     QVBoxLayout *mainLayout;
     QGridLayout *imagesLayout;
 
-
+    QString selectDir;
     QFutureWatcher<QImage> *imageScaling;
 
 
