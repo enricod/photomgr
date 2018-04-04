@@ -16,7 +16,7 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        mainwindow.cpp \
+    mainwindow.cpp \
     thumbsworker.cpp
 
 HEADERS  += mainwindow.h \
@@ -24,4 +24,5 @@ HEADERS  += mainwindow.h \
 
 FORMS    += mainwindow.ui
 
-DISTFILES +=
+DISTFILES += \
+    README.md

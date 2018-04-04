@@ -126,14 +126,10 @@ void MainWindow::thumbFound(QString filename)
     QImage scaled = image.scaled(QSize(imageSize, imageSize), Qt::KeepAspectRatio, Qt::SmoothTransformation);
 
     imageLabel->setFixedSize(imageSize,imageSize);
-    imagesLayout->addWidget(imageLabel, labels.length() % 3, labels.length() / 3);
+    imagesLayout->addWidget(imageLabel, labels.length() / 4 , labels.length() % 4 );
+    imageLabel->setPixmap(QPixmap::fromImage(scaled));
     labels.append(imageLabel);
 
-    imageLabel->setPixmap(QPixmap::fromImage(scaled));
-
-    //openButton->setEnabled(true);
-    //cancelButton->setEnabled(false);
-    //pauseButton->setEnabled(false);
 }
 
 MainWindow::~MainWindow()

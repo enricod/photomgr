@@ -64,16 +64,20 @@ QString ThumbsWorker::creaThumbnail( QString filename)
     QDir().mkdir( thumbsDir );
     QString result = QString( thumbsDir.append("/").append( fileInfo.baseName()).append(".jpeg"));
 
-    // qDebug("creazione thumb per %s -> %s ", filenameAsCharArray, ThumbsWorker::toCharArray(result));
+    // fprintf(stdout, "creazione miniatura '%s' ->  %s \n", ThumbsWorker::toCharArray(filename),ThumbsWorker::toCharArray(result) );
+    // cout << "creazione miniatura " << ThumbsWorker::toCharArray(filename) << " -> " << ThumbsWorker::toCharArray(result) << endl;
+    //qDebug("creazione thumb per %s -> %s ", ThumbsWorker::toCharArray(filename), ThumbsWorker::toCharArray(result));
+
+    if (QFile::exists(result) ) return result;
 
     LibRaw rawProcessor;
 
 
     // NON passare char* altrimenti rawProcessor cambia il nome del file
-    int ret  = rawProcessor.open_file( ThumbsWorker::toCharArray(filename) );
+    int ret  = rawProcessor.open_file( ThumbsWorker::toCharArray(filename), 1 );
     if (ret != LIBRAW_SUCCESS)
     {
-        fprintf(stderr, "errore apertura '%s' : %s \n", ThumbsWorker::toCharArray(filename), libraw_strerror(ret));
+        fprintf(stderr, "errore apertura '%s' : %d %s \n", ThumbsWorker::toCharArray(filename), ret, libraw_strerror(ret));
         return QString("");
     }
 /*

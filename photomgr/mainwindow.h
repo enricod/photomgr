@@ -4,7 +4,6 @@
 #include <QMainWindow>
 #include <QtWidgets>
 #include <QtConcurrent/QtConcurrent>
-#include "thumbsextractorthread.h"
 
 namespace Ui {
 class MainWindow;
@@ -31,6 +30,8 @@ public slots:
 private:
     Ui::MainWindow *ui;
     QList<QLabel *> labels;
+    int thumbsPerColumn = 1;
+    int thumbSize;
 
     QPushButton *openButton;
 
